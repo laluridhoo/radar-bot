@@ -102,9 +102,8 @@ export async function POST(request: Request): Promise<Response> {
     const createTime = toUnixSeconds(item.createTime);
     if (createTime === null || createTime < threshold) return false;
 
-    const ageInHours = Math.max((now - createTime) / 3600, 0.5);
-    const vph = (Number(item.playCount) || 0) / ageInHours;
-    return vph >= 3000;
+    const views = Number(item.playCount) || 0;
+    return views >= 5000;
   });
 
   if (viral.length === 0) {
@@ -115,13 +114,10 @@ export async function POST(request: Request): Promise<Response> {
     const createTime = toUnixSeconds(item.createTime) ?? now;
     const ageMinutes = Math.max(0, Math.floor((now - createTime) / 60));
     const views = Number(item.playCount) || 0;
-    const ageInHours = Math.max((now - createTime) / 3600, 0.5);
-    const vph = views / ageInHours;
-
     return [
       `*[SLOT ${slot}]* 🚀 Early viral TikTok`,
       `⏳ Umur: ${ageMinutes} menit`,
-      `👁️ Views: ${views.toLocaleString("id-ID")} (VPH ${Math.round(vph).toLocaleString("id-ID")})`,
+      `👁️ Views: ${views.toLocaleString("id-ID")}`,
       `🔗 \`${item.webVideoUrl ?? ""}\``,
     ].join("\n");
   });
