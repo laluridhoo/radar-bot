@@ -81,17 +81,12 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ status: "error", reason: "defaultDatasetId tidak ditemukan" }, { status: 400 });
   }
 
-  const datasetUrl = new URL(
-    `https://api.apify.com/v2/datasets/${encodeURIComponent(datasetId)}/items`
-  );
+  const datasetUrl = new URL(`https://api.apify.com/v2/datasets/${encodeURIComponent(datasetId)}/items`);
   datasetUrl.searchParams.set("token", token);
 
   const datasetResponse = await fetch(datasetUrl);
   if (!datasetResponse.ok) {
-    return Response.json(
-      { status: "error", reason: `Apify dataset ${datasetResponse.status}` },
-      { status: 502 }
-    );
+    return Response.json({ status: "error", reason: `Apify dataset ${datasetResponse.status}` }, { status: 502 });
   }
 
   const items = (await datasetResponse.json()) as TikTokPost[];
@@ -103,7 +98,7 @@ export async function POST(request: Request): Promise<Response> {
     if (createTime === null || createTime < threshold) return false;
 
     const views = Number(item.playCount) || 0;
-    return views >= 5000;
+    return views >= 100_000;
   });
 
   if (viral.length === 0) {
@@ -114,12 +109,7 @@ export async function POST(request: Request): Promise<Response> {
     const createTime = toUnixSeconds(item.createTime) ?? now;
     const ageMinutes = Math.max(0, Math.floor((now - createTime) / 60));
     const views = Number(item.playCount) || 0;
-    return [
-      `*[SLOT ${slot}]* 🚀 Early viral TikTok`,
-      `⏳ Umur: ${ageMinutes} menit`,
-      `👁️ Views: ${views.toLocaleString("id-ID")}`,
-      `🔗 \`${item.webVideoUrl ?? ""}\``,
-    ].join("\n");
+    return [`*[SLOT ${slot}]* 🚀 Early viral TikTok`, `⏳ Umur: ${ageMinutes} menit`, `👁️ Views: ${views.toLocaleString("id-ID")}`, `🔗 \`${item.webVideoUrl ?? ""}\``].join("\n");
   });
 
   for (const message of messages) {
