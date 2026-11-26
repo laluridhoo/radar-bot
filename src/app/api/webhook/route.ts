@@ -91,14 +91,14 @@ export async function POST(request: Request): Promise<Response> {
 
   const items = (await datasetResponse.json()) as TikTokPost[];
   const now = Math.floor(Date.now() / 1000);
-  const threshold = now - 24 * 3600;
+  const threshold = now - 12 * 3600;
 
   const viral = items.filter((item) => {
     const createTime = toUnixSeconds(item.createTime);
     if (createTime === null || createTime < threshold) return false;
 
     const views = Number(item.playCount) || 0;
-    return views >= 200;
+    return views >= 100000;
   });
 
   if (viral.length === 0) {
