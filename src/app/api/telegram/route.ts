@@ -9,9 +9,9 @@ type TelegramUpdate = {
   };
 };
 
-type Slot = "1" | "2" | "3" | "4";
+type Slot = "1" | "2" | "3" | "4" | "5";
 
-const MAX_HASHTAGS: Record<Slot, number> = { "1": 4, "2": 3, "3": 3, "4": 3 };
+const MAX_HASHTAGS: Record<Slot, number> = { "1": 4, "2": 3, "3": 3, "4": 3, "5": 3 };
 
 async function sendMessage(text: string): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -50,7 +50,7 @@ async function getHashtags(slot: Slot): Promise<string[]> {
 }
 
 async function listHashtags(): Promise<void> {
-  const slots: Slot[] = ["1", "2", "3", "4"];
+  const slots: Slot[] = ["1", "2", "3", "4", "5"];
   const all = await Promise.all(slots.map(getHashtags));
 
   const lines = slots.map((slot, index) => {
@@ -80,7 +80,7 @@ export async function POST(request: Request): Promise<Response> {
       return new Response("OK", { status: 200 });
     }
 
-    const match = /^\/set([1234])$/.exec(command);
+    const match = /^\/set([12345])$/.exec(command);
     if (match) {
       const slot = match[1] as Slot;
       const hashtags = parseHashtags(text, MAX_HASHTAGS[slot]);
@@ -95,7 +95,7 @@ export async function POST(request: Request): Promise<Response> {
       return new Response("OK", { status: 200 });
     }
 
-    const clearMatch = /^\/clear([1234])$/.exec(command);
+    const clearMatch = /^\/clear([12345])$/.exec(command);
     if (clearMatch) {
       const slot = clearMatch[1] as Slot;
       await redis.del(`hashtags:slot:${slot}`);

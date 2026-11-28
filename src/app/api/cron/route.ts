@@ -2,7 +2,7 @@ import { redis } from "@/lib/redis";
 
 export const maxDuration = 60;
 
-type Slot = "1" | "2" | "3" | "4";
+type Slot = "1" | "2" | "3" | "4" | "5";
 
 const ACTOR_ID = "clockworks~tiktok-hashtag-scraper";
 
@@ -10,7 +10,8 @@ function tokenFor(slot: Slot): string | undefined {
   if (slot === "1") return process.env.APIFY_TOKEN_1;
   if (slot === "2") return process.env.APIFY_TOKEN_2;
   if (slot === "3") return process.env.APIFY_TOKEN_3;
-  return process.env.APIFY_TOKEN_4;
+  if (slot === "4") return process.env.APIFY_TOKEN_4;
+  return process.env.APIFY_TOKEN_5;
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -21,7 +22,7 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const rawSlot = searchParams.get("slot");
-  if (rawSlot !== "1" && rawSlot !== "2" && rawSlot !== "3" && rawSlot !== "4") {
+  if (rawSlot !== "1" && rawSlot !== "2" && rawSlot !== "3" && rawSlot !== "4" && rawSlot !== "5") {
     return Response.json({ status: "error", reason: "invalid slot" }, { status: 400 });
   }
   const slot: Slot = rawSlot;
