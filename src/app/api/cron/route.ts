@@ -2,15 +2,16 @@ import { redis } from "@/lib/redis";
 
 export const maxDuration = 60;
 
-type Slot = "1" | "2" | "3";
+type Slot = "1" | "2" | "3" | "4";
 
 const ACTOR_ID = "clockworks~tiktok-hashtag-scraper";
 
 function tokenFor(slot: Slot): string | undefined {
   if (slot === "1") return process.env.APIFY_TOKEN_1;
   if (slot === "2") return process.env.APIFY_TOKEN_2;
-  return process.env.APIFY_TOKEN_3;
-}
+  if (slot === "3") return process.env.APIFY_TOKEN_3;
+  return process.env.APIFY_TOKEN_4;
+;
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
@@ -69,10 +70,7 @@ export async function GET(request: Request): Promise<Response> {
   });
 
   if (!response.ok) {
-    return Response.json(
-      { status: "error", reason: await response.text() },
-      { status: 502 }
-    );
+    return Response.json({ status: "error", reason: await response.text() }, { status: 502 });
   }
 
   const payload = (await response.json()) as {
