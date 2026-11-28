@@ -60,7 +60,7 @@ export async function GET(request: Request): Promise<Response> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       hashtags,
-      resultsPerPage: 5,
+      resultsPerPage: 10,
       shouldDownloadVideos: false,
       shouldDownloadCovers: false,
       shouldDownloadSubtitles: false,
