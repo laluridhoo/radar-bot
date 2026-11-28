@@ -11,7 +11,7 @@ function tokenFor(slot: Slot): string | undefined {
   if (slot === "2") return process.env.APIFY_TOKEN_2;
   if (slot === "3") return process.env.APIFY_TOKEN_3;
   return process.env.APIFY_TOKEN_4;
-;
+}
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const rawSlot = searchParams.get("slot");
-  if (rawSlot !== "1" && rawSlot !== "2" && rawSlot !== "3") {
+  if (rawSlot !== "1" && rawSlot !== "2" && rawSlot !== "3" && rawSlot !== "4") {
     return Response.json({ status: "error", reason: "invalid slot" }, { status: 400 });
   }
   const slot: Slot = rawSlot;
